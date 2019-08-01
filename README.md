@@ -197,100 +197,100 @@ Spring容器的refresh()【创建刷新】
 ###
 
             // Prepare this context for refreshing.
-			// 容器刷新前的准备，设置上下文状态，获取属性，验证必要的属性等
-			prepareRefresh();
+    // 容器刷新前的准备，设置上下文状态，获取属性，验证必要的属性等
+    prepareRefresh();
 
-			// Tell the subclass to refresh the internal bean factory.
-			// 获取新的beanFactory，销毁原有beanFactory、为每个bean生成BeanDefinition等
-			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+    // Tell the subclass to refresh the internal bean factory.
+    // 获取新的beanFactory，销毁原有beanFactory、为每个bean生成BeanDefinition等
+    ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 
-			// Prepare the bean factory for use in this context.
-			// 配置标准的beanFactory，设置ClassLoader，设置SpEL表达式解析器，添加忽略注入的接口，添加bean，添加bean后置处理器等
-			//			1）、设置BeanFactory的类加载器、支持表达式解析器...
-			//			2）、添加部分BeanPostProcessor【ApplicationContextAwareProcessor】
-			//			3）、设置忽略的自动装配的接口EnvironmentAware、EmbeddedValueResolverAware、xxx；
-			//			4）、注册可以解析的自动装配；我们能直接在任何组件中自动注入：
-			//			BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext
-			//			5）、添加BeanPostProcessor【ApplicationListenerDetector】
-			//			6）、添加编译时的AspectJ；
-			//			7）、给BeanFactory中注册一些能用的组件；
-			//			environment【ConfigurableEnvironment】、
-			//			systemProperties【Map<String, Object>】、
-			//			systemEnvironment【Map<String, Object>】
-			prepareBeanFactory(beanFactory);
+    // Prepare the bean factory for use in this context.
+    // 配置标准的beanFactory，设置ClassLoader，设置SpEL表达式解析器，添加忽略注入的接口，添加bean，添加bean后置处理器等
+    //			1）、设置BeanFactory的类加载器、支持表达式解析器...
+    //			2）、添加部分BeanPostProcessor【ApplicationContextAwareProcessor】
+    //			3）、设置忽略的自动装配的接口EnvironmentAware、EmbeddedValueResolverAware、xxx；
+    //			4）、注册可以解析的自动装配；我们能直接在任何组件中自动注入：
+    //			BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext
+    //			5）、添加BeanPostProcessor【ApplicationListenerDetector】
+    //			6）、添加编译时的AspectJ；
+    //			7）、给BeanFactory中注册一些能用的组件；
+    //			environment【ConfigurableEnvironment】、
+    //			systemProperties【Map<String, Object>】、
+    //			systemEnvironment【Map<String, Object>】
+    prepareBeanFactory(beanFactory);
 
-			try {
+    try {
 
-				// Allows post-processing of the bean factory in context subclasses.
-				// 模板方法，此时，所有的beanDefinition已经加载，但是还没有实例化。
-				// 允许在子类中对beanFactory进行扩展处理。比如添加ware相关接口自动装配设置，添加后置处理器等，是子类扩展prepareBeanFactory(beanFactory)的方法
-				postProcessBeanFactory(beanFactory);
+        // Allows post-processing of the bean factory in context subclasses.
+        // 模板方法，此时，所有的beanDefinition已经加载，但是还没有实例化。
+        // 允许在子类中对beanFactory进行扩展处理。比如添加ware相关接口自动装配设置，添加后置处理器等，是子类扩展prepareBeanFactory(beanFactory)的方法
+        postProcessBeanFactory(beanFactory);
 
-				// Invoke factory processors registered as beans in the context.
-				// 实例化并调用所有注册的beanFactory后置处理器（实现接口BeanFactoryPostProcessor的bean，在beanFactory标准初始化之后执行）。
-				//		例如:   PropertyPlaceholderConfigurer(处理占位符)
-				invokeBeanFactoryPostProcessors(beanFactory);
+        // Invoke factory processors registered as beans in the context.
+        // 实例化并调用所有注册的beanFactory后置处理器（实现接口BeanFactoryPostProcessor的bean，在beanFactory标准初始化之后执行）。
+        //		例如:   PropertyPlaceholderConfigurer(处理占位符)
+        invokeBeanFactoryPostProcessors(beanFactory);
 
-				// Register bean processors that intercept bean creation.
-				// 实例化和注册beanFactory中扩展了BeanPostProcessor的bean。
-				//		例如：
-				//		AutowiredAnnotationBeanPostProcessor(处理被@Autowired注解修饰的bean并注入)
-				//		RequiredAnnotationBeanPostProcessor(处理被@Required注解修饰的方法)
-				//		CommonAnnotationBeanPostProcessor(处理@PreDestroy、@PostConstruct、@Resource等多个注解的作用)等。
-				registerBeanPostProcessors(beanFactory);
+        // Register bean processors that intercept bean creation.
+        // 实例化和注册beanFactory中扩展了BeanPostProcessor的bean。
+        //		例如：
+        //		AutowiredAnnotationBeanPostProcessor(处理被@Autowired注解修饰的bean并注入)
+        //		RequiredAnnotationBeanPostProcessor(处理被@Required注解修饰的方法)
+        //		CommonAnnotationBeanPostProcessor(处理@PreDestroy、@PostConstruct、@Resource等多个注解的作用)等。
+        registerBeanPostProcessors(beanFactory);
 
-				// Initialize message source for this context.
-				// 初始化MessageSource组件 (做国际化功能；消息绑定，消息解析)
-				initMessageSource();
+        // Initialize message source for this context.
+        // 初始化MessageSource组件 (做国际化功能；消息绑定，消息解析)
+        initMessageSource();
 
-				// Initialize event multicaster for this context.
-				// 初始化事件派发器
-				initApplicationEventMulticaster();
+        // Initialize event multicaster for this context.
+        // 初始化事件派发器
+        initApplicationEventMulticaster();
 
-				// Initialize other special beans in specific context subclasses.
-				// 模板方法，在容器刷新的时候可以自定义逻辑，不同的Spring容器做不同的事情。
-				onRefresh();
+        // Initialize other special beans in specific context subclasses.
+        // 模板方法，在容器刷新的时候可以自定义逻辑，不同的Spring容器做不同的事情。
+        onRefresh();
 
-				// Check for listener beans and register them.
-				// 注册监听器，广播early application events
-				registerListeners();
+        // Check for listener beans and register them.
+        // 注册监听器，广播early application events
+        registerListeners();
 
-				// Instantiate all remaining (non-lazy-init) singletons.
-				// 实例化所有剩余的（非懒加载）单例
-				//		比如invokeBeanFactoryPostProcessors方法中根据各种注解解析出来的类，在这个时候都会被初始化。
-				//		实例化的过程各种BeanPostProcessor开始起作用。
-				finishBeanFactoryInitialization(beanFactory);
+        // Instantiate all remaining (non-lazy-init) singletons.
+        // 实例化所有剩余的（非懒加载）单例
+        //		比如invokeBeanFactoryPostProcessors方法中根据各种注解解析出来的类，在这个时候都会被初始化。
+        //		实例化的过程各种BeanPostProcessor开始起作用。
+        finishBeanFactoryInitialization(beanFactory);
 
-				// Last step: publish corresponding event.
-				// refresh做完之后需要做的其他事情。
-				//		清除上下文资源缓存（如扫描中的ASM元数据）
-				//		初始化上下文的生命周期处理器，并刷新（找出Spring容器中实现了Lifecycle接口的bean并执行start()方法）。
-				//		发布ContextRefreshedEvent事件告知对应的ApplicationListener进行响应的操作
-				finishRefresh();
-			}
+        // Last step: publish corresponding event.
+        // refresh做完之后需要做的其他事情。
+        //		清除上下文资源缓存（如扫描中的ASM元数据）
+        //		初始化上下文的生命周期处理器，并刷新（找出Spring容器中实现了Lifecycle接口的bean并执行start()方法）。
+        //		发布ContextRefreshedEvent事件告知对应的ApplicationListener进行响应的操作
+        finishRefresh();
+    }
 
-			catch (BeansException ex) {
-				if (logger.isWarnEnabled()) {
-					logger.warn("Exception encountered during context initialization - " +
-							"cancelling refresh attempt: " + ex);
-				}
+    catch (BeansException ex) {
+        if (logger.isWarnEnabled()) {
+            logger.warn("Exception encountered during context initialization - " +
+                    "cancelling refresh attempt: " + ex);
+        }
 
-				// Destroy already created singletons to avoid dangling resources.
-				destroyBeans();
+        // Destroy already created singletons to avoid dangling resources.
+        destroyBeans();
 
-				// Reset 'active' flag.
-				cancelRefresh(ex);
+        // Reset 'active' flag.
+        cancelRefresh(ex);
 
-				// Propagate exception to caller.
-				throw ex;
-			}
+        // Propagate exception to caller.
+        throw ex;
+    }
 
-			finally {
-				// Reset common introspection caches in Spring's core, since we
-				// might not ever need metadata for singleton beans anymore...
-				resetCommonCaches();
-			}
+    finally {
+        // Reset common introspection caches in Spring's core, since we
+        // might not ever need metadata for singleton beans anymore...
+        resetCommonCaches();
+    }
 
 
 
