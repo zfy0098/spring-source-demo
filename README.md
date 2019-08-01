@@ -194,7 +194,7 @@ Spring容器的refresh()【创建刷新】
 		ApplicationEventMulticaster；事件派发：
 
 
-## 
+###
 
             // Prepare this context for refreshing.
 			// 容器刷新前的准备，设置上下文状态，获取属性，验证必要的属性等
